@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_31_112658) do
+ActiveRecord::Schema.define(version: 2020_10_31_214746) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,21 +25,22 @@ ActiveRecord::Schema.define(version: 2020_10_31_112658) do
 
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "quantili", null: false
     t.string "code", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "quantity", null: false
     t.index ["code"], name: "index_products_on_code", unique: true
     t.index ["name"], name: "index_products_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "login", null: false
-    t.string "password", null: false
-    t.boolean "admin", default: false
+    t.string "login"
+    t.boolean "admin"
+    t.string "password_digest"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["login"], name: "index_users_on_login", unique: true
+    t.string "authentication_token", limit: 30
+    t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
   end
 
 end

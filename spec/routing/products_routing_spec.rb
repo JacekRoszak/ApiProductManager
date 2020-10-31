@@ -24,7 +24,7 @@ RSpec.describe ProductsController, type: :routing do
     end
 
     it "routes to #destroy" do
-      expect(delete: "/products/1").to route_to("products#destroy", id: "1")
+      expect(delete: "/products/1").not_to route_to("products#destroy", id: "1")
     end
   end
 end

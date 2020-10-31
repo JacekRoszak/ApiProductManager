@@ -3,5 +3,6 @@ class Product < ApplicationRecord
   validates :code, presence: true, uniqueness: true
   validates :name, presence: true, uniqueness: true
 
-  has_many :orders, class_name: 'Order', foreign_key: 'code'
+  # has_many :orders, class_name: 'Order', foreign_key: 'code'
+
 end

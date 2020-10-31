@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  # has_secure_password
   before_action :set_user, only: %i[show update destroy]
 
   def index
@@ -13,7 +14,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
+    @user.password = BCrypt::Password.create(@user.password)
     if @user.save
       render json: @user, status: :created, location: @user
     else

@@ -17,11 +17,11 @@ RSpec.describe "/users", type: :request do
   # User. As you add validations to User, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    { login: 'test', password: 'test-1-test', admin: false }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    { login: '', password: '', admin: false }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -32,23 +32,27 @@ RSpec.describe "/users", type: :request do
     {}
   }
 
-  describe "GET /index" do
+  User.delete_all
+
+  describe "#index" do
     it "renders a successful response" do
-      User.create! valid_attributes
+      temp = User.create! valid_attributes
       get users_url, headers: valid_headers, as: :json
       expect(response).to be_successful
+      temp.destroy
     end
   end
 
-  describe "GET /show" do
+  describe "#show" do
     it "renders a successful response" do
-      user = User.create! valid_attributes
-      get user_url(user), as: :json
+      temp = User.create! valid_attributes
+      get user_url(temp), as: :json
       expect(response).to be_successful
+      temp.destroy
     end
   end
 
-  describe "POST /create" do
+  describe "#create" do
     context "with valid parameters" do
       it "creates a new User" do
         expect {
@@ -61,7 +65,7 @@ RSpec.describe "/users", type: :request do
         post users_url,
              params: { user: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
-        expect(response.content_type).to match(a_string_including("application/json"))
+        expect(response.content_type).to match(a_string_including("application/json; charset=utf-8"))
       end
     end
 
@@ -77,7 +81,7 @@ RSpec.describe "/users", type: :request do
         post users_url,
              params: { user: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq("application/json")
+        expect(response.content_type).to eq("application/json; charset=utf-8")
       end
     end
   end
@@ -85,23 +89,24 @@ RSpec.describe "/users", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        { login: 'test2', password: 'test-2-test', admin: false }
       }
 
       it "updates the requested user" do
         user = User.create! valid_attributes
         patch user_url(user),
-              params: { user: invalid_attributes }, headers: valid_headers, as: :json
+              params: { user: new_attributes }, headers: valid_headers, as: :json
         user.reload
-        skip("Add assertions for updated state")
+        expect(user.login).to eq('test2')
       end
 
       it "renders a JSON response with the user" do
+        User.delete_all
         user = User.create! valid_attributes
         patch user_url(user),
-              params: { user: invalid_attributes }, headers: valid_headers, as: :json
+              params: { user: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq("application/json")
+        expect(response.content_type).to eq("application/json; charset=utf-8")
       end
     end
 
@@ -111,17 +116,8 @@ RSpec.describe "/users", type: :request do
         patch user_url(user),
               params: { user: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq("application/json")
+        expect(response.content_type).to eq("application/json; charset=utf-8")
       end
-    end
-  end
-
-  describe "DELETE /destroy" do
-    it "destroys the requested user" do
-      user = User.create! valid_attributes
-      expect {
-        delete user_url(user), headers: valid_headers, as: :json
-      }.to change(User, :count).by(-1)
     end
   end
 end
