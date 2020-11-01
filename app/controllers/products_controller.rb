@@ -15,7 +15,7 @@ class ProductsController < ApplicationController
                              quantity: params[:quantity],
                              code: params[:code])
       if @product.save
-        render json: @product, status: :created, location: @product
+        render json: @product, status: :created
       else
         render json: @product.errors, status: :unprocessable_entity
       end

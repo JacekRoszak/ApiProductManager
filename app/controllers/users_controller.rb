@@ -15,7 +15,7 @@ class UsersController < ApplicationController
                        password: params[:password],
                        admin: params[:admin] )
       if @user.save
-        render json: @user, status: :created, location: @user
+        render json: @user, status: :created
       else
         render json: @user.errors, status: :unprocessable_entity
       end
