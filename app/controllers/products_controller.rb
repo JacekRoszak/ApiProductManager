@@ -27,8 +27,8 @@ class ProductsController < ApplicationController
   def update
     if current_user.admin
       @product = Product.find_by(code: params[:code])
-      if @product.update(name: params[:name],
-                         quantity: params[:quantity])
+      if @product&.update(name: params[:name],
+                          quantity: params[:quantity])
         render json: @product
       else
         render json: @product.errors, status: :unprocessable_entity
