@@ -1,46 +1,46 @@
 class UsersController < ApplicationController
-  # has_secure_password
-  before_action :set_user, only: %i[show update destroy]
+  before_action :set_user, only: :update
+
+  def updating_yourself
+    User.find_by(authentication_token: params[:authentication_token]) == User.find(params[:id])
+  end
 
   def index
-    @users = User.all
-
+    @users = params[:login] ? User.where(login: params[:login]) : User.all
     render json: @users
   end
 
-  def show
-    render json: @user
-  end
-
   def create
-    @user = User.new(user_params)
-    @user.password = BCrypt::Password.create(@user.password)
-    if @user.save
-      render json: @user, status: :created, location: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
+    if current_user.admin
+      @user = User.new(login: params[:login],
+                       password: BCrypt::Password.create(params[:password]),
+                       admin: params[:admin] )
+      if @user.save
+        render json: @user, status: :created, location: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     end
   end
 
   def update
-    if @user.update(user_params)
-      render json: @user
+    if current_user.admin || updating_yourself
+      @user.login = params[:login]
+      @user.password = params[:password]
+      @user.admin = params[:admin] if current_user.admin
+      if @user.save
+        render json: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors, status: :unprocessable_entity
+      head(:unauthorized)
     end
-  end
-
-  def destroy
-    @user.destroy
   end
 
   private
 
   def set_user
     @user = User.find(params[:id])
-  end
-
-  def user_params
-    params.require(:user).permit(:login, :password, :admin)
   end
 end

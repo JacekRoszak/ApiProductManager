@@ -9,10 +9,6 @@ RSpec.describe '/products', type: :request do
     { name: '', code: '', quantity: 0 }
   }
 
-  # This should return the minimal set of values that should be in the headers
-  # in order to pass any filters (e.g. authentication) defined in
-  # ProductsController, or in your router and rack
-  # middleware. Be sure to keep this updated too.
   let(:valid_headers) {
     {}
   }

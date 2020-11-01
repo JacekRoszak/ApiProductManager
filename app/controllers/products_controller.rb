@@ -1,45 +1,40 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[show update destroy]
 
   def index
-    @products = Product.all
-
+    if params[:code]
+      @products = Product.find_by(code: params[:code])
+    else
+      @products = Product.all
+    end
     render json: @products
   end
 
-  def show
-    render json: @product
-  end
-
   def create
-    @product = Product.new(product_params)
-
-    if @product.save
-      render json: @product, status: :created, location: @product
+    if current_user.admin
+      @product = Product.new(name: params[:name],
+                             quantity: params[:quantity],
+                             code: params[:code])
+      if @product.save
+        render json: @product, status: :created, location: @product
+      else
+        render json: @product.errors, status: :unprocessable_entity
+      end
     else
-      render json: @product.errors, status: :unprocessable_entity
+      head(:unauthorized)
     end
   end
 
   def update
-    if @product.update(product_params)
-      render json: @product
+    if current_user.admin
+      @product = Product.find_by(code: params[:code])
+      if @product.update(name: params[:name],
+                         quantity: params[:quantity])
+        render json: @product
+      else
+        render json: @product.errors, status: :unprocessable_entity
+      end
     else
-      render json: @product.errors, status: :unprocessable_entity
+      head(:unauthorized)
     end
-  end
-
-  def destroy
-    @product.destroy
-  end
-
-  private
-
-  def set_product
-    @product = Product.find(params[:id])
-  end
-
-  def product_params
-    params.require(:product).permit(:name, :quantity, :code)
   end
 end
