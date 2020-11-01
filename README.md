@@ -1,24 +1,11 @@
-# README
+Api Product Manager is a simple test app for managing products database with simple token authentication. It's writen in Ruby ('2.7.1') on Rails. 
+I used BCrypt, Slim, simple_token_authentication, Postgresql, rspec, factorybot and also active_model_serializers.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+There is an admin accout already created:
+login: admin
+password: topsecret
 
-Things you may want to cover:
+Complete documentation:
+`https://documenter.getpostman.com/view/13297141/TVYM3FFc`
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Created by Jacek Roszak.
