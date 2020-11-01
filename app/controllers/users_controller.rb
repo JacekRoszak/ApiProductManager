@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: :update
 
   def updating_yourself
     User.find_by(authentication_token: params[:authentication_token]) == User.find(params[:id])
@@ -25,7 +24,7 @@ class UsersController < ApplicationController
 
   def update
     if current_user.admin || updating_yourself
-      @user.login = params[:login]
+      @user = User.find_by(login: params[:login])
       @user.password = params[:password]
       @user.admin = params[:admin] if current_user.admin
       if @user.save
@@ -36,11 +35,5 @@ class UsersController < ApplicationController
     else
       head(:unauthorized)
     end
-  end
-
-  private
-
-  def set_user
-    @user = User.find(params[:id])
   end
 end
