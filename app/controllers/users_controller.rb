@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def create
     if current_user.admin
       @user = User.new(login: params[:login],
-                       password: BCrypt::Password.create(params[:password]),
+                       password: params[:password],
                        admin: params[:admin] )
       if @user.save
         render json: @user, status: :created, location: @user
