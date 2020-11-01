@@ -6,5 +6,4 @@ Rails.application.routes.draw do
   # Identifying product for update, by its code, not id.
   patch 'products', to: 'products#update'
   delete 'orders', to: 'orders#destroy'
-  root 'https://documenter.getpostman.com/view/13297141/TVYM3FFc'
 end
