@@ -29,7 +29,7 @@ class ProductsController < ApplicationController
       @product = Product.find_by(code: params[:code])
       if @product
         if @product.update(name: params[:name],
-                            quantity: params[:quantity])
+                           quantity: params[:quantity])
           render json: @product
         else
           render json: @product.errors, status: :unprocessable_entity

@@ -34,7 +34,7 @@ class OrdersController < ApplicationController
   end
 
   def destroy
-    @order = Order.find(params[:id])
+    @order = Order.find_by(id: params[:id])
     if @order
       if @order.user_id == current_user.id || current_user.admin
         @product = Product.find_by(code: @order.code)

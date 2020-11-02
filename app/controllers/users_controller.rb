@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   skip_before_action :authenticate_with_token, only: :create
 
   def updating_yourself
-    User.find_by(authentication_token: params[:authentication_token]) == User.find(params[:id])
+    User.find_by(authentication_token: params[:authentication_token]) == User.find_by(id: params[:id])
   end
 
   def index
@@ -12,8 +12,13 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(login: params[:login],
-                      password: params[:password] )
-    @user.admin = params[:admin] if current_user&.admin
+                     password: params[:password] )
+
+    if current_user&.admin
+      @user.admin = params[:admin]
+    else
+      @user.admin = false
+    end
     if @user.save
       render json: @user, status: :created
     else
@@ -22,17 +27,24 @@ class UsersController < ApplicationController
   end
 
   def update
-    if current_user.admin || updating_yourself
-      @user = User.find_by(login: params[:login])
-      @user.password = params[:password]
-      @user.admin = params[:admin] if current_user.admin
-      if @user.save
-        render json: @user
+    @user = User.find_by(id: params[:id])
+    if @user
+      if current_user.admin || updating_yourself
+        @user.login = params[:login]
+        @user.password = params[:password]
+        if current_user.admin
+          @user.admin = params[:admin]
+        end
+        if @user.save
+          render json: @user
+        else
+          render json: @user.errors, status: :unprocessable_entity
+        end
       else
-        render json: @user.errors, status: :unprocessable_entity
+        head(:unauthorized)
       end
     else
-      head(:unauthorized)
+      head(:not_found)
     end
   end
 end
