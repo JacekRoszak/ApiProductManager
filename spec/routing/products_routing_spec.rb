@@ -7,7 +7,7 @@ RSpec.describe ProductsController, type: :routing do
     end
 
     it "routes to #show" do
-      expect(get: "/products/1").to route_to("products#show", id: "1")
+      expect(get: "/products/1").not_to route_to("products#show", id: "1")
     end
 
 
@@ -16,11 +16,11 @@ RSpec.describe ProductsController, type: :routing do
     end
 
     it "routes to #update via PUT" do
-      expect(put: "/products/1").to route_to("products#update", id: "1")
+      expect(put: "/products/1").not_to route_to("products#update", id: "1")
     end
 
     it "routes to #update via PATCH" do
-      expect(patch: "/products/1").to route_to("products#update", id: "1")
+      expect(patch: "/products").to route_to("products#update")
     end
 
     it "routes to #destroy" do

@@ -35,17 +35,17 @@ class OrdersController < ApplicationController
 
   def destroy
     @order = Order.find(params[:id])
-    if @order.user_id == current_user.id || current_user.admin
-      if @order
+    if @order
+      if @order.user_id == current_user.id || current_user.admin
         @product = Product.find_by(code: @order.code)
         @product.update(quantity: @product.quantity + @order.quantity)
         @order.destroy
         head(:ok)
       else
-        head(:not_found)
+        head(:unauthorized)
       end
     else
-      head(:unauthorized)
+      head(:not_found)
     end
   end
 end
