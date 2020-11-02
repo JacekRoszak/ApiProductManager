@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  skip_before_action :authenticate_with_token, only: :create
 
   def updating_yourself
     User.find_by(authentication_token: params[:authentication_token]) == User.find(params[:id])
@@ -10,15 +11,13 @@ class UsersController < ApplicationController
   end
 
   def create
-    if current_user.admin
-      @user = User.new(login: params[:login],
-                       password: params[:password],
-                       admin: params[:admin] )
-      if @user.save
-        render json: @user, status: :created
-      else
-        render json: @user.errors, status: :unprocessable_entity
-      end
+    @user = User.new(login: params[:login],
+                      password: params[:password] )
+    @user.admin = params[:admin] if current_user&.admin
+    if @user.save
+      render json: @user, status: :created
+    else
+      render json: @user.errors, status: :unprocessable_entity
     end
   end
 
